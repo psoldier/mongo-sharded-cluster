@@ -8,6 +8,7 @@
     length(in bytes), 
     full_path, 
     data(binary),
+    xxhash,
     upload_date 
   }
   ######################################################################################
@@ -24,10 +25,12 @@
 =end
 
 require 'mongo'
-require 'filemagic'
+require 'mimemagic'
+require 'xxhash'
 
-@folder_path = '/home/psoldier/Documentos'
-@file_size_allowed = 8 #MB
+#@folder_path = '/home/psoldier'
+@folder_path = '/home/psoldier/proyectos/mongo-sharded-cluster'
+@file_size_allowed = 16#MB
 
 @database_ip = '192.168.58.50'
 @database_name = 'tesina'
@@ -38,11 +41,12 @@ def generate_file_data(path_filename)
   filename = File.basename(path_filename)
   name = File.basename(path_filename, ".*")
   extension = File.extname(path_filename).delete(".")
-  mime_type = FileMagic.new(FileMagic::MAGIC_MIME).file(path_filename)
+  mime_type = MimeMagic.by_path('load.rb').type
   length = File.size(path_filename)
   full_path = File.expand_path(path_filename)
   data = BSON::Binary.new(IO.binread(path_filename), :md5)
   upload_date = Time.now
+  xxhash = XXhash.xxh64(IO.binread(path_filename)).to_s
   {
     filename: filename, 
     name: name, 
@@ -51,7 +55,8 @@ def generate_file_data(path_filename)
     length: length, 
     full_path: full_path, 
     data: data,
-    upload_date: Time.now 
+    upload_date: Time.now,
+    xxhash: xxhash
   }
 end
 
