@@ -42,11 +42,6 @@ class Archive
       upload_date: Time.now,
       xxhash: xxhash
     })
-    last_insert_time = (`tail -n 1 mongo.log`).split("|").last.strip.gsub("s","").to_f
-    DB.collection('insertion_stadistics').insert_one({
-      insert_time: last_insert_time,
-      storage_bytes: DB.command({collStats:'archivos'}).documents.first["storageSize"]
-    })
   end
 
   def self.find name
@@ -55,11 +50,6 @@ class Archive
       DB.collection('archivos').find( { name: name } ).first.each do |key,value|
         archive.send("#{key}=", value)
       end
-      last_find_time = (`tail -n 1 mongo.log`).split("|").last.strip.gsub("s","").to_f
-      DB.collection('find_stadistics').insert_one({
-        insert_time: last_find_time,
-        storage_bytes: DB.command({collStats:'archivos'}).documents.first["storageSize"]
-      })
       archive
     rescue NoMethodError
       nil
