@@ -1,35 +1,51 @@
 require 'bundler'
 Bundler.require :default
 
-# Load
 require_relative 'config/application'
-require_relative 'models/archive'
+
+# Require all application files
+Dir["./models/*.rb"].sort.each     { |rb| require rb }
+Dir["./helpers/*.rb"].sort.each    { |rb| require rb }
 
 class App < Hobbit::Base
   include Hobbit::Render
+  include Hobbit::Helpers::LoadData
+  include Hobbit::Helpers::View
+
   use Rack::Static, root: 'public', urls: ['/css','/fonts','/js','/images']
 
   get '/' do
-    @pablo = "pabloKpo"
-    @inserts_data = [{ x: 1, y: 2.1 }, { x: 3.3, y: 3.9 }, { x: 5.2, y: 7.1 }]
-    @finds_data = [{ x: 2, y: 0 }, { x: 3, y: 2 }, { x: 5, y: 10 }]
+    @finds_data = DB.collection('find_stadistics').find().sort( { storage_megabytes: 1 } ).map{|f| {x: f["storage_megabytes"], y:f["find_time"] } }
+    @inserts_data = DB.collection('insertion_stadistics').find().sort( { storage_megabytes: 1 } ).map{|f| {x: f["storage_megabytes"], y:f["insert_time"] } }
     render 'index'
   end
 
-  post '/' do
-=begin
-    path = params[:path]
-    list_files(path).each do |path_filename|
-      #guardo el archivo
-      archivo = Archive.new(path_filename).save
-      save_last_insertion_stadistics(get_last_query_time)
-      #recupero el archivo
-      archive = Archive.find(archivo.name)
-      save_last_find_stadistics(get_last_query_time)
-      #check same file saved
-      raise "Archivo mal guardado" unless archive.ok?
+  get '/load_data' do
+    render 'load_data'
+  end
+
+  post '/load_data' do
+    path = request.params["path"]
+    if File.directory?(path)
+      files = list_files(path)
+      files.each do |path_filename|
+        puts "Archivo: #{path_filename}"
+        #guardo el archivo y tiempo de insercion
+        archivo = Archive.new(path_filename).save
+        save_last_insertion_stadistics(get_last_query_time)
+        
+        puts "Busco archivo: #{archivo.name}"
+        #recupero el archivo para guardar el tiempo de busqueda
+        archive = Archive.find(archivo.name)
+        save_last_find_stadistics(get_last_query_time)
+
+        puts "Se guardo #{archive.ok?}"
+      end
+      @flash = {message: "#{files.count} archivos se han cargado correctamente.", type: "success"}
+    else
+      @flash = {message: "El path no corresponde a un directorio válido", type: "danger"}
     end
-=end
+    render 'load_data'
   end
 
 end

@@ -16,12 +16,12 @@
 class Archive
   attr_accessor :_id, :filename, :name, :extension, :mime_type, :length, :full_path, :data, :xxhash, :upload_date
 
-  def initialize(path_filename=nil)
-    unless !path_filename
+  def initialize(path_filename="")
+    unless !File.file?(path_filename)
       @filename = File.basename(path_filename)
       @name = File.basename(path_filename, ".*")
       @extension = File.extname(path_filename).delete(".")
-      @mime_type = MimeMagic.by_path(path_filename).type
+      @mime_type = MimeMagic.by_path(path_filename)&.type || ""
       @length = File.size(path_filename)
       @full_path = File.expand_path(path_filename)
       @data = BSON::Binary.new(IO.binread(path_filename), :md5)
@@ -42,6 +42,7 @@ class Archive
       upload_date: Time.now,
       xxhash: xxhash
     })
+    return self
   end
 
   def self.find name

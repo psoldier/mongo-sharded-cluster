@@ -41,12 +41,14 @@
         </div>
         <div id="navbar" class="collapse navbar-collapse">
           <ul class="nav navbar-nav">
-            <li class="active"><a href="/">Estadísticas</a></li>
+            <li class="<%= active_class("/") %>"><a href="/">Estadísticas</a></li>
+            <li class="<%= active_class("/load_data") %>"><a href="/load_data">Cargar archivos</a></li>
           </ul>
         </div>
       </div>
     </nav>
     <div class="container">
+      <%= partial 'alerts' %>
       <%= yield %>
     </div>
     <footer class="footer"></footer>

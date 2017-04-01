@@ -1,0 +1,10 @@
+<% unless @flash.nil? %>
+  <div class="row">
+    <div class="col-xs-12">
+      <div class="alert alert-<%= @flash.delete(:type) %> alert-dismissable">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <%= @flash.delete(:message) %>
+      </div>
+    </div>
+  </div>
+<% end %>

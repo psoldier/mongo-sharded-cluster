@@ -1,0 +1,19 @@
+<div class="row">
+  <div class="col-md-12">
+    <h3>Cargar archivos</h3>
+    <hr></hr>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-12">
+    <form action="/load_data" method="post" class="form-inline">
+      <div class="form-group">
+        <label for="path">Directorio</label>
+        <input type="text" class="form-control" id="path" name="path" placeholder="/home">
+      </div>
+       <button type="submit" class="btn btn-default">Procesar</button>
+       <p class="help-block">Se cargarán los archivos menores o iguales a 16MB.</p>
+    </form>
+  </div>
+</div>

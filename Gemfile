@@ -8,3 +8,5 @@ gem 'mongo'
 gem 'xxhash'
 gem 'mimemagic'
 gem 'json'
+
+gem 'rerun'

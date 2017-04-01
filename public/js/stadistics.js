@@ -24,7 +24,7 @@ var chartInstanceDifferentHoverMode = new Chart(ctx, {
       xAxes: [{
         scaleLabel: {
           display: true,
-          labelString: 'Bytes'
+          labelString: 'MB'
         },
         type: 'linear',
         position: 'bottom'
