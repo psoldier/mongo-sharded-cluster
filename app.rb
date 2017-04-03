@@ -28,20 +28,26 @@ class App < Hobbit::Base
     path = request.params["path"]
     if File.directory?(path)
       files = list_files(path)
-      files.each do |path_filename|
-        puts "Archivo: #{path_filename}"
-        #guardo el archivo y tiempo de insercion
-        archivo = Archive.new(path_filename).save
-        save_last_insertion_stadistics(get_last_query_time)
-        
-        puts "Busco archivo: #{archivo.name}"
-        #recupero el archivo para guardar el tiempo de busqueda
-        archive = Archive.find(archivo.name)
-        save_last_find_stadistics(get_last_query_time)
+      process_files = 0
+      begin
+        files.each do |path_filename|
+          puts "Archivo: #{path_filename}"
+          #guardo el archivo y tiempo de insercion
+          archivo = Archive.new(path_filename).save
+          save_last_insertion_stadistics(get_last_query_time)
+          
+          puts "Busco archivo: #{archivo.name}"
+          #recupero el archivo para guardar el tiempo de busqueda
+          archive = Archive.find(archivo.name)
+          save_last_find_stadistics(get_last_query_time)
 
-        puts "Se guardo #{archive.ok?}"
+          puts "Se guardo #{archive.ok?}"
+          process_files += 1
+        end
+        @flash = {message: "#{files.count} archivos se han cargado correctamente.", type: "success"}
+      rescue
+        @flash = {message: "#{process_files} archivos se han cargado correctamente.", type: "success"}
       end
-      @flash = {message: "#{files.count} archivos se han cargado correctamente.", type: "success"}
     else
       @flash = {message: "El path no corresponde a un directorio válido", type: "danger"}
     end
