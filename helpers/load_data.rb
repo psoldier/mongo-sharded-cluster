@@ -6,24 +6,30 @@ module Hobbit
         Dir[ File.join(dir, '**', '*') ].select { |f| File.file?(f) && (File.size(f) / 1_000_000) <= 16 }
       end
 
+      #time in Miliseconds
       def get_last_query_time
-        (`tail -n 1 mongo.log`).split("|").last.strip.gsub("s","").to_f
+        ((`tail -n 1 mongo.log`).split("|").last.strip.gsub("s","").to_f * 1000.0).to_i
       end
 
-      def save_last_insertion_stadistics last_insert_time
-        DB.collection('insertion_stadistics').insert_one({
-          insert_time: last_insert_time,
-          storage_megabytes: (DB.command({collStats:'archivos'}).documents.first["storageSize"] / 1_000_000)
-        })
+      def log_stadistics filename, time
+        File.open(filename, 'a'){ |f| f.puts "{'x': #{total_storage}, 'y': #{time}},"}
       end
 
-      def save_last_find_stadistics last_find_time
-        DB.collection('find_stadistics').insert_one({
-          find_time: last_find_time,
-          storage_megabytes: (DB.command({collStats:'archivos'}).documents.first["storageSize"] / 1_000_000)
-        })
+      #storageSize in MB
+      def total_storage
+        DB.command({collStats:'archivos'}).documents.first["storageSize"] / 1_000_000
       end
 
+      def finds random_extension, random_name, random_length
+        DB.collection('archivos').find( { extension: random_extension } ).count
+        log_stadistics('find_by_extension_time.json',get_last_query_time)
+
+        DB.collection('archivos').find( { name: random_name } ).first
+        log_stadistics('find_by_name_time.json',get_last_query_time)
+
+        DB.collection('archivos').find( { length: {"$gt"=> random_length} } ).count
+        log_stadistics('find_by_size_time.json',get_last_query_time)
+      end
     end
   end
 end

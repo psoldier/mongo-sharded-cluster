@@ -6,7 +6,6 @@
     extension, 
     mime_type, 
     length(in bytes), 
-    full_path, 
     data(binary),
     xxhash,
     upload_date 
@@ -14,7 +13,7 @@
 =end
 
 class Archive
-  attr_accessor :_id, :filename, :name, :extension, :mime_type, :length, :full_path, :data, :xxhash, :upload_date
+  attr_accessor :_id, :filename, :name, :extension, :mime_type, :length, :data, :xxhash, :upload_date
 
   def initialize(path_filename="")
     unless !File.file?(path_filename)
@@ -23,7 +22,6 @@ class Archive
       @extension = File.extname(path_filename).delete(".")
       @mime_type = MimeMagic.by_path(path_filename)&.type || ""
       @length = File.size(path_filename)
-      @full_path = File.expand_path(path_filename)
       @data = BSON::Binary.new(IO.binread(path_filename), :md5)
       @upload_date = Time.now
       @xxhash = XXhash.xxh64(IO.binread(path_filename)).to_s
@@ -37,7 +35,6 @@ class Archive
       extension: extension, 
       mime_type: mime_type, 
       length: length, 
-      full_path: full_path, 
       data: data,
       upload_date: Time.now,
       xxhash: xxhash

@@ -3,16 +3,28 @@ var ctx = document.getElementById("myChart");
 var data = {
   datasets: [
     {
-      label: '# Tiempo de respuesta en la inserción',
+      label: '# Inserción',
       borderColor: 'rgba(255, 99, 132, 1)',
       backgroundColor: 'rgba(255, 99, 132, 0.2)',
-      data: inser_data
+      data: inserts_data
     },
     {
-      label: '# Tiempo de respuesta en la búsqueda',
+      label: '# Búsqueda por Extensión',
+      borderColor: 'rgba(0, 255, 0, 1)',
+      backgroundColor: 'rgba(0, 255, 0, 0.2)',
+      data: finds_extension_data
+    },
+    {
+      label: '# Búsqueda por Nombre',
+      borderColor: 'rgba(255, 255, 0, 1)',
+      backgroundColor: 'rgba(255, 255, 0, 0.2)',
+      data: finds_name_data
+    },
+    {
+      label: '# Búsqueda por Tamaño',
       borderColor: 'rgba(153, 102, 255, 1)',
       backgroundColor: 'rgba(153, 102, 255, 0.2)',
-      data: find_data
+      data: finds_size_data
     }
   ]
 };
