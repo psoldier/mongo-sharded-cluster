@@ -3,7 +3,7 @@ module Hobbit
     module LoadData
 
       def list_files(dir)
-        Dir[ File.join(dir, '**', '*') ].select { |f| File.file?(f) && (File.size(f) / 1_000_000) <= 16 }
+        Dir[ File.join(dir, '**', '*') ].select { |f| File.file?(f) && (File.size(f) / 1_048_576.0) <= 16.0 }
       end
 
       #time in Miliseconds
@@ -17,15 +17,17 @@ module Hobbit
 
       #storageSize in MB
       def total_storage
-        DB.command({collStats:'archivos'}).documents.first["storageSize"] / 1_000_000
+        (DB.command({collStats:'archivos'}).documents.first["storageSize"] / 1_048_576.0).round
       end
 
       def finds random_extension, random_name, random_length
         DB.collection('archivos').find( { extension: random_extension } ).count
         log_stadistics('find_by_extension_time.json',get_last_query_time)
 
-        DB.collection('archivos').find( { name: random_name } ).first
+        archive = Archive.find(random_name)
+        raise "Archivo #{archive.filename} mal guardado" unless archive.ok?
         log_stadistics('find_by_name_time.json',get_last_query_time)
+        
 
         DB.collection('archivos').find( { length: {"$gt"=> random_length} } ).count
         log_stadistics('find_by_size_time.json',get_last_query_time)

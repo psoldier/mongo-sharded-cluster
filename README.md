@@ -8,3 +8,11 @@
   ~$  bundle install
 4)Run application
   ~$ rackup
+
+
+
+#mongo --host ip_host
+#use tesina
+#db.createCollection("archivos")
+#show dbs
+#show collections

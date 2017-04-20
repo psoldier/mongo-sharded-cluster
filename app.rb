@@ -28,31 +28,31 @@ class App < Hobbit::Base
   end
 
   post '/load_data' do
-    @insert_interval = 200
-    @find_intervals = {"1.0":true, "2.5":true, "5.0":true, "10.0":true, "20.0":true}
+    total = total_storage.to_f
+    giga_total = (total/1024).round
+    @find_intervals = {"1.0":(giga_total < 1.0), "2.5":(giga_total < 2.5), "5.0":(giga_total < 5.0), "10.0":(giga_total < 10.0), "20.0":(giga_total < 20.0)}
 
     path = request.params["path"]
     if File.directory?(path)
       files = list_files(path)
       list_names, list_extensions = [], []
-      total = total_storage.to_f
       storage, process_files = 0.0, 0
       begin
         files.each do |path_filename|
           puts "Archivo: #{path_filename}"
           archive = Archive.new(path_filename).save
           process_files += 1
-          storage += archive.length
+          storage += (archive.length / 1_048_576.0)
 
-          if (storage / 1_000_000) >= @insert_interval
+          if storage >= 450.0
             log_stadistics('insert_time.json',get_last_query_time)
-            total += (storage / 1_000_000)
-            key_position = @find_intervals.keys.map(&:to_s).map(&:to_f).select{|x| (total/1024) > x }.last.to_s.to_sym
+            giga_total = (total_storage.to_f / 1024)
+            key_position = @find_intervals.keys.map(&:to_s).map(&:to_f).select{|x| giga_total > x }.last.to_s.to_sym
             if @find_intervals[key_position]
               finds(list_extensions.sample,list_names.sample,rand(2..15_999_999))
               @find_intervals[key_position] = false
             end
-            storage = 0
+            storage = 0.0
           end
           if process_files % 20
             list_names << archive.name
