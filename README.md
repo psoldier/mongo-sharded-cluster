@@ -8,3 +8,24 @@
   ~$  bundle install
 4)Run application
   ~$ rackup
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+load) wget --random-wait -r -p -e robots=off -U mozilla http://en.wikipedia.org/wiki/Main_Page
