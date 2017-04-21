@@ -16,4 +16,7 @@
 #show dbs
 #show collections
 
-load) wget --random-wait -r -p -e robots=off -U mozilla http://en.wikipedia.org/wiki/Main_Page
+
+Load DB
+wget --random-wait -r -p -e robots=off -U mozilla http://en.wikipedia.org/wiki/Lionel_Messi
+find . -type f -size -16M -exec mv {} /home/psoldier/Escritorio/files16MB/ \;
