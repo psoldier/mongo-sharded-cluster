@@ -10,12 +10,12 @@
   ~$ rackup
 
 
-
 #mongo --host ip_host
 #use tesina
 #db.createCollection("archivos")
 #show dbs
 #show collections
+
 
 Load DB 
 wget --random-wait -r -p -e robots=off -U mozilla http://en.wikipedia.org/wiki/Lionel_Messi
