@@ -18,7 +18,8 @@
 
 
 Load DB 
-wget --random-wait -r -p -e robots=off -U mozilla http://en.wikipedia.org/wiki/Lionel_Messi
+wget --random-wait -r -p -e robots=off -U mozilla https://en.wikiquote.org/wiki/Main_Page
+
 
 Mv only files
 find . -type f -size -16M -exec mv {} /home/postgrado/psoldier/pablo/ \;
