@@ -15,12 +15,15 @@ class App < Hobbit::Base
   use Rack::Static, root: 'public', urls: ['/css','/fonts','/js','/images']
 
   get '/' do
-    @inserts_data = "[" + File.read("insert_time.json").gsub("\n","") + "]"
-    @finds_extension_data = "[" + File.read("find_by_extension_time.json").gsub("\n","") + "]"
-    @finds_name_data = "[" + File.read("find_by_name_time.json").gsub("\n","") + "]"
-    @finds_size_data = "[" + File.read("find_by_size_time.json").gsub("\n","") + "]"
-    
-    render 'index'
+    if File.exist?("insert_time.json")
+      @inserts_data = "[" + File.read("insert_time.json").gsub("\n","") + "]"
+      @finds_extension_data = "[" + File.read("find_by_extension_time.json").gsub("\n","") + "]"
+      @finds_name_data = "[" + File.read("find_by_name_time.json").gsub("\n","") + "]"
+      @finds_size_data = "[" + File.read("find_by_size_time.json").gsub("\n","") + "]"
+      render 'index'
+    else
+      response.redirect '/load_data' 
+    end
   end
 
   get '/load_data' do
@@ -44,7 +47,7 @@ class App < Hobbit::Base
           process_files += 1
           storage += (archive.length / 1_048_576.0)
 
-          if storage >= 450.0
+          if storage >= 600.0
             log_stadistics('insert_time.json',get_last_query_time)
             giga_total = (total_storage.to_f / 1024)
             key_position = @find_intervals.keys.map(&:to_s).map(&:to_f).select{|x| giga_total > x }.last.to_s.to_sym

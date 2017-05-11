@@ -17,8 +17,29 @@
 #show collections
 
 
-Load DB
-wget --random-wait -r -p -e robots=off -U mozilla https://en.wikipedia.org/wiki/Portal:Biography
-find . -type f -size -16M -exec mv {} /media/psoldier/0A8F1055164CDB77/wiki_files_2/ \;
+Load DB 
+wget --random-wait -r -p -e robots=off -U mozilla https://en.wikiquote.org/wiki/Main_Page
 
-wget --random-wait -r -p -e robots=off -U mozilla https://en.wikipedia.org/wiki/Portal:Technology
+
+Mv only files
+find . -type f -size -16M -exec mv {} /home/postgrado/psoldier/pablo/ \;
+find . -type f -size -16M -exec mv {} /home/postgrado/psoldier/wikifiles/ \;
+
+gcp -rv wiki2 /home/postgrado/psoldier/wiki2/
+
+wget --random-wait -r -p -e robots=off -U mozilla https://es.wikipedia.org/wiki/Wikipedia:Efem%C3%A9rides
+
+
+En promedio: 
+21G...............231794 archivos.................7,4G
+60G...............657793 archivos.................21G
+
+Si ya tengo 21-> me van a faltar 40G
+
+
+UTF8 FILENAMES
+
+find . -type f -print0 | \
+perl -n0e '$new = $_; if($new =~ s/[^[:ascii:]]/_/g) {
+  print("Renaming $_ to $new\n"); rename($_, $new);
+}'

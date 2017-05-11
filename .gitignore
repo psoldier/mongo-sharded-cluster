@@ -1,7 +1,7 @@
 application.rb
 mongo.log
 notes.txt
-find_by_extension_time.json
-find_by_name_time.json
-find_by_size_time.json
-insert_time.json
+/find_by_extension_time.json
+/find_by_name_time.json
+/find_by_size_time.json
+/insert_time.json
