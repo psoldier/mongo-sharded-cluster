@@ -1,3 +1,4 @@
 Mongo::Logger.logger = ::Logger.new('mongo.log')
 
-DB = Mongo::Client.new([ '163.10.33.224:27017, 163.10.33.225:27017, 163.10.33.227:27017' ], database: 'tesina', replica_set: 'rs').database
+DB = Mongo::Client.new([ '192.168.58.50' ], database: 'tesina', connect: :sharded).database
+SHARD_IPS = ['192.168.58.13','192.168.58.10']
