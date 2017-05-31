@@ -20,6 +20,7 @@ class App < Hobbit::Base
       @finds_extension_data = "[" + File.read("find_by_extension_time.json").gsub("\n","") + "]"
       @finds_name_data = "[" + File.read("find_by_name_time.json").gsub("\n","") + "]"
       @finds_size_data = "[" + File.read("find_by_size_time.json").gsub("\n","") + "]"
+      @finds_shard_data = File.exist?("find_by_shard_time.json") ? "[" + File.read("find_by_shard_time.json").gsub("\n","") + "]" : "[]"
       render 'index'
     else
       response.redirect '/load_data' 

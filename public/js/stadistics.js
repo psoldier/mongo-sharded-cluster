@@ -25,6 +25,12 @@ var data = {
       borderColor: 'rgba(153, 102, 255, 1)',
       backgroundColor: 'rgba(153, 102, 255, 0.2)',
       data: finds_size_data
+    },
+    {
+      label: '# Búsqueda por Shard',
+      borderColor: 'rgba(80, 102, 255, 1)',
+      backgroundColor: 'rgba(80, 102, 255, 0.2)',
+      data: finds_shard_data
     }
   ]
 };
